@@ -1,0 +1,9 @@
+INSERT INTO aip_posts(user_id, title, link, by, content, post_type, date_created)
+VALUES
+(1,'The Heart of a Woman','https://www.penguinrandomhouse.com/books/3954/the-heart-of-a-woman-by-maya-angelou/','Maya Angelou','In The Heart of a Woman, Maya Angelou leaves California with her son, Guy, to move to New York. There she enters the society and world of black artists and writers, reads her work at the Harlem Writers Guild, and begins to take part in the struggle of black Americans for their rightful place in the world. In the meantime, her personal life takes an unexpected turn.','book',now() - '1 days'::INTERVAL),
+(1,'Health Solutions Library','https://chriskresser.com/health-solutions-library/','Chris Kresser','','lifestyle',now() - '1 days'::INTERVAL),
+(2,'The Healing Kitchen,'https://www.thepaleomom.com/books/the-healing-kitchen/','Sarah Ballantyne','','recipe',now() - '1 days'::INTERVAL)
+(1,'Reinventing the Body, Resurrecting the Soul','','Deepak Chopra','Transformation can''t stop with the body, however; it must involve the soul. The soul–seemingly invisible, aloof, and apart from the material world–actually creates the body. Only by going to the level of the soul will you access your full potential, bringing more intelligence, creativity, and awareness into every aspect of your life.','book',now() - '1 days'::INTERVAL),
+(3,'Awakening Your True Self into 2021','https://mysolluna.com/blog/2021/01/04/awakening-your-true-self-into-2021-episode-539/','Kimberly Snyder','','podcast',now() - '1 days'::INTERVAL),
+(2,'An amazing event','https://www.google.com/','','Stay Inspired. Stay Connected.','event',now() - '1 days'::INTERVAL);
+;
