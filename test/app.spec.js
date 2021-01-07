@@ -43,6 +43,10 @@ describe('Test api endpoints', () => {
                 "id": 3,
                 "username": "uragnar",
                 "fullname": "Uhtred Ragnarsson"
+            },
+            { "id": 4, 
+            "username": 'bobbrown', 
+            "fullname": 'bob brown' 
             }
         ])
       })

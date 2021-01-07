@@ -2,6 +2,9 @@ const express = require('express')
 const xss = require('xss')
 const path = require('path')
 const UsersService = require('./users-service')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 
 const usersRouter = express.Router()
 const jsonParser = express.json()
@@ -26,26 +29,37 @@ usersRouter
     })
     .post(jsonParser, (req, res, next)=>{
        const { fullname, username, password } = req.body
-       const newUser = { fullname, username, password }
+  
+        bcrypt.genSalt(saltRounds, function(err, salt) {
+          bcrypt.hash(password, salt, function(err, hash) {
+            
+            const password = hash;
+            const newUser = { fullname, username, password }
 
-       for(const [key, value] of Object.entries(newUser)){
-          if(value==null){
-            return res.status(400).json({
-              error: {message: `Missing '${key}' in request body`}
-             })
+            for(const [key, value] of Object.entries(newUser)){
+              if(value==null){
+                return res.status(400).json({
+                  error: {message: `Missing '${key}' in request body`}
+                 })
+                }
             }
-        }
-       UsersService.insertNewUser(
-         req.app.get('db'),
-         newUser
-        )
-       .then(user=>{
-         res
-           .status(201)
-           .location(path.posix.join(req.originalUrl + `/${user.id}`))
-           .json(serializedUser(user))
-        })
-        .catch(next)
+
+            UsersService.insertNewUser(
+              req.app.get('db'),
+              newUser
+             )
+            .then(user=>{
+              res
+                .status(201)
+                .location(path.posix.join(req.originalUrl + `/${user.id}`))
+                .json(serializedUser(user))
+             })
+             .catch(next)
+
+          });
+      });
+
+       
     })
 
 usersRouter
@@ -101,7 +115,7 @@ usersRouter
     })
     .post(jsonParser, (req, res, next)=>{
       const { username, password } = req.body
-      console.log(username, password)
+  
       if(username == res.user.username && password == res.user.password)
       {
         res.json({"userId": res.user.id})
