@@ -113,16 +113,26 @@ usersRouter
         })
         .catch(next)       
     })
+
     .post(jsonParser, (req, res, next)=>{
-      const { username, password } = req.body
-  
-      if(username == res.user.username && password == res.user.password)
+      const { password } = req.body
+      bcrypt.compare(password, res.user.password, function(error, response) {
+        if(!response){
+          res.status(401).json({success: false});
+        } 
+        else
+        {
+          res.status(200).json({success: true});
+        }
+       
+      }); 
+      /*if(username == res.user.username && password == res.user.password)
       {
         res.json({"userId": res.user.id})
       }
       else{
         res.json({"success": false})
-      }
+      }*/
       
     })
    
