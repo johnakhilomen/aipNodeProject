@@ -2,7 +2,7 @@ const express = require('express')
 const xss = require('xss')
 const path = require('path')
 const PostsService = require('./posts-service')
-
+const UsersService = require('../users/users-service')
 const postsRouter = express.Router()
 const jsonParser = express.json()
 
@@ -19,33 +19,37 @@ const serializedPost = post =>({
 })
 
 postsRouter
-  .route('/')
-  .get((req, res, next)=>{
-  const {userid}=req.query;
-  if(!userid){
-    PostsService.getAllPosts(
-       req.app.get('db'),
-    )
-   .then(posts=>{
-      res.json(posts.map(serializedPost))
-    })
-   .catch(next)
-  }
-  if(userid){
-    PostsService.getPostsByUserId(
-      req.app.get('db'),
-      userid
-    )
-    .then(posts=>{
-      if(posts.length===0){
-        return res.status(404).json({
-        error: {message: `Posts with that username or id do not exsit`}
+  .route('/:username')
+  .get((req, res, next)=>{  
+  UsersService.getUserByUsername(
+    req.app.get('db'),
+    req.params.username
+  )
+  .then(user=>{
+
+    if(!user){
+       return res.status(404).json({
+       error: {message: `User doesn't exist` }
         })
       }
-      res.json(posts.map(serializedPost)) 
-    })
-    .catch(next)
-    }
+    
+      PostsService.getPostsByUserId(
+          req.app.get('db'),
+          user.id
+      )
+      .then(posts=>{
+          if(posts.length===0){
+            return res.status(404).json({
+            error: {message: `Posts with that username or id do not exsit`}
+            })
+          }
+          res.json(posts.map(serializedPost)) 
+        })
+      .catch(next)
+      
+  })
+  .catch(next)    
+ 
     })
     .post(jsonParser, (req, res, next)=>{
        const { user_id, title, link, start_date,by,content, post_type } = req.body
