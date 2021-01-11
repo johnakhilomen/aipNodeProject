@@ -52,10 +52,35 @@ postsRouter
  
     })
     .post(jsonParser, (req, res, next)=>{
-       const { user_id, title, link, start_date,by,content, post_type } = req.body
-       const newPost = { user_id, title, link, start_date,by,content, post_type }
+       const { title, link, by,content, post_type } = req.body
        const validPostTypes = [`recipe`, `lifestyle`,`event`,`book`,`podcast`]
-       if(!user_id){
+
+       UsersService.getUserByUsername(
+        req.app.get('db'),
+        req.params.username
+      )
+      .then(user=>{
+    
+        if(!user){
+           return res.status(404).json({
+           error: {message: `User doesn't exist` }
+            })
+          }
+          const user_id = user.id;
+          const newPost = { user_id, title, link,by,content, post_type }
+          PostsService.insertNewPost(
+            req.app.get('db'),
+              newPost
+          )
+          .then(post=>{
+             res
+          .status(201)
+             .location(path.posix.join(req.originalUrl + `/${post.id}`))
+             .json(serializedPost(post))
+            })  
+          
+
+    /*if(!user_id){
          return res.status(400).json({
          error: { message : `Missing user_id in request body` }
        })
@@ -94,18 +119,11 @@ postsRouter
       return res.status(400).json({
       error: { message : `Recipe post type must be include a title and content` }
     })
-    }
-    PostsService.insertNewPost(
-      req.app.get('db'),
-        newPost
-    )
-    .then(post=>{
-       res
-    .status(201)
-       .location(path.posix.join(req.originalUrl + `/${post.id}`))
-       .json(serializedPost(post))
-      })
+    }*/
+    
     })
+
+  })
 postsRouter
     .route(`/:post_id`)
     .all((req, res, next)=>{
