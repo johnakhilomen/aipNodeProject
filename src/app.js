@@ -7,7 +7,8 @@ const logger = require('./logger')
 const { NODE_ENV } = require('./config')
 const usersRouter = require('./users/users-router.js')
 const postsRouter = require('./posts/posts-router.js')
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerDoc = require("../swgger.json");
 const app = express()
 
 const morganOption = (NODE_ENV === 'production')
@@ -31,6 +32,7 @@ app.use(cors())
 
 app.use('/api/users',usersRouter)
 app.use('/api/posts',postsRouter)
+app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.get('/',(req,res)=>{
     res.send('Hello, world!')
