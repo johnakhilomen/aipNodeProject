@@ -28,140 +28,69 @@ describe('Test api endpoints', () => {
         it(`/api/users should respond with 200 and a list of users`, () => {
         return supertest(app)
           .get('/api/users')
-          .expect(200, [
-            {
-                "id": 1,
-                "username": "divyanat",
-                "fullname": "Divya Natarajan"
-            },
-            {
-                "id": 2,
-                "username": "dtarg",
-                "fullname": "Daenerys Targaryen"
-            },
-            {
-                "id": 3,
-                "username": "uragnar",
-                "fullname": "Uhtred Ragnarsson"
-            },
-            { "id": 4, 
-            "username": 'bobbrown', 
-            "fullname": 'bob brown' 
-            }
-        ])
+          .expect(200, 
+            [
+                { id: 1, username: 'jondoe3', fullname: 'Jon Doe' },
+                { id: 2, username: 'jondoe4', fullname: 'Jon Doe' },
+                { id: 3, username: 'jondoe5', fullname: 'Jon Doe' },
+                { id: 4, username: 'jondoe6', fullname: 'Jon Doe' },
+                { id: 5, username: 'jondoe7', fullname: 'Jon Doe' },
+                { id: 6, username: 'davidg', fullname: 'david g' },
+                { id: 8, username: 'johnA', fullname: 'johnA' },
+                { id: 12, username: 'bobsmith', fullname: 'bob smith' },
+                { id: 9, username: 'bobb', fullname: 'Bob B' },
+                { id: 17, username: 'jondoe8', fullname: 'Jon Doe' },
+                { id: 18, username: 'jondoe9', fullname: 'Jon Doe' },
+                { id: 19, username: '', fullname: '' },
+                { id: 21, username: 'test1', fullname: 'test1' },
+                { id: 29, username: 'joeb', fullname: 'joe ben' },
+                { id: 35, username: 'test', fullname: 'test' },
+                { id: 37, username: 'davidb', fullname: 'David B' }
+              ]
+                
+            )
       })
 
-      it(`/api/users/1 should respond with 200 and divyanat`, () => {
+      it(`/api/users/1 should respond with 200 and jondoe3`, () => {
         return supertest(app)
           .get('/api/users/1')
           .expect(200, 
             {
                 "id": 1,
-                "username": "divyanat",
-                "fullname": "Divya Natarajan"
+                "username": "jondoe3",
+                "fullname": "Jon Doe"
             },
             )
       })
 
-      it(`/api/users/checkuser/divyanat should respond with 200 and success:true`, () => {
+      it(`/api/users/checkuser/jondoe3 authentication should respond with 200`, () => {
         return supertest(app)
-          .post('/api/users/checkuser/divyanat')
-          .send({"username": "divyanat", "password": "Genericpass123!"})
-          .expect(200, 
-            {
-                userId: 1
-            }
-            )
+          .post('/api/users/checkuser/jondoe3')
+          .send({"password": "password"})
+          .expect(200)
       })
 
-      it(`/api/users/checkuser/divyanat should respond with 200 and success:false`, () => {
+      it(`/api/users/checkuser/jondoe3 anuthorized should respond with 401`, () => {
         return supertest(app)
-          .post('/api/users/checkuser/divyanat')
-          .send({"username": "divyanat", "password": "Genericpass123"})
-          .expect(200, 
-            {
-                "success": false,
-            }
-            )
+          .post('/api/users/checkuser/jondoe3')
+          .send({"password": "passwords"})
+          .expect(401)
       })
+
+      /*
+      it(`/api/users/checkuser/jondoe3 anuthorized should respond with 401`, () => {
+        return supertest(app)
+          .put('/api/users/checkuser/jondoe3')
+          .send({"password": "passwords"})
+          .expect(201)
+      })
+
+      it(`/api/users/checkuser/jondoe3 anuthorized should respond with 401`, () => {
+        return supertest(app)
+          .delete('/api/users/checkuser/jondoe3')
+          .expect(200)
+      })*/
 
     })
 
-
-    context(`/api/posts`, () => {
-        it(`should respond with 200 and a list of posts`, () => {
-          return supertest(app)
-            .get('/api/posts')
-            .expect(200, [
-                {
-                    "id": 1,
-                    "user_id": 1,
-                    "title": "The Heart of a Woman",
-                    "link": "https://www.penguinrandomhouse.com/books/3954/the-heart-of-a-woman-by-maya-angelou/",
-                    "by": "Maya Angelou",
-                    "content": "In The Heart of a Woman, Maya Angelou leaves California with her son, Guy, to move to New York. There she enters the society and world of black artists and writers, reads her work at the Harlem Writers Guild, and begins to take part in the struggle of black Americans for their rightful place in the world. In the meantime, her personal life takes an unexpected turn.",
-                    "post_type": "book",
-                    "date_created": "2021-01-06T04:13:49.290Z"
-                },
-                {
-                    "id": 2,
-                    "user_id": 2,
-                    "title": "The Healing Kitchen",
-                    "link": "https://www.thepaleomom.com/books/the-healing-kitchen/",
-                    "by": "Sarah Ballantyne",
-                    "content": "",
-                    "post_type": "recipe",
-                    "date_created": "2021-01-06T04:14:34.353Z"
-                },
-                {
-                    "id": 3,
-                    "user_id": 1,
-                    "title": "Reinventing the Body, Resurrecting the Soul",
-                    "link": "",
-                    "by": "Deepak Chopra",
-                    "content": "Transformation can't stop with the body, however; it must involve the soul. The soul–seemingly invisible, aloof, and apart from the material world–actually creates the body. Only by going to the level of the soul will you access your full potential, bringing more intelligence, creativity, and awareness into every aspect of your life.",
-                    "post_type": "book",
-                    "date_created": "2021-01-06T04:14:50.463Z"
-                },
-                {
-                    "id": 4,
-                    "user_id": 3,
-                    "title": "Awakening Your True Self into 2021",
-                    "link": "https://mysolluna.com/blog/2021/01/04/awakening-your-true-self-into-2021-episode-539/",
-                    "by": "Kimberly Snyder",
-                    "content": "",
-                    "post_type": "podcast",
-                    "date_created": "2021-01-06T04:14:58.674Z"
-                },
-                {
-                    "id": 5,
-                    "user_id": 2,
-                    "title": "An amazing event",
-                    "link": "https://www.google.com/",
-                    "by": "",
-                    "content": "Stay Inspired. Stay Connected.",
-                    "post_type": "event",
-                    "date_created": "2021-01-06T04:14:58.674Z"
-                }
-            ])
-        })
-
-        it(`should respond with 200 and post with id 1`, () => {
-            return supertest(app)
-              .get('/api/posts/1')
-              .expect(200, 
-                {
-                    "id": 1,
-                    "user_id": 1,
-                    "title": "The Heart of a Woman",
-                    "link": "https://www.penguinrandomhouse.com/books/3954/the-heart-of-a-woman-by-maya-angelou/",
-                    "by": "Maya Angelou",
-                    "content": "In The Heart of a Woman, Maya Angelou leaves California with her son, Guy, to move to New York. There she enters the society and world of black artists and writers, reads her work at the Harlem Writers Guild, and begins to take part in the struggle of black Americans for their rightful place in the world. In the meantime, her personal life takes an unexpected turn.",
-                    "post_type": "book",
-                    "date_created": "2021-01-06T04:13:49.290Z"
-                },
-                )
-          })
-
-      })
 })
